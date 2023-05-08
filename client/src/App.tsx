@@ -1,36 +1,33 @@
-import { useEffect } from "react";
-import { createTRPCProxyClient, httpBatchLink } from "@trpc/client";
-import { AppRouter } from "../../server/src/docs/server";
+import { ChangeEvent, useState } from "react";
+import Papa from "papaparse";
 
-//     👆 **type-only** import
-// Pass AppRouter as generic here. 👇 This lets the `trpc` object know
-// what procedures are available on the server and their input/output types.
-const trpc = createTRPCProxyClient<AppRouter>({
-  links: [
-    httpBatchLink({
-      url: "http://localhost:3000",
-    }),
-  ],
-});
-
-const main = async () => {
-  // Inferred types
-  const user = await trpc.userById.query("1");
-  const createdUser = await trpc.userCreate.mutate({ name: "sachinraja" });
-};
+type ParsedCsv = Array<String[]>;
 
 export default function App() {
-  const makeReq = async () => {
-    console.log("res");
-  };
+  const [csvFile, setCsvFile] = useState<ParsedCsv>();
+  const handleFileUpload = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return console.error("error detecting file???");
 
-  useEffect(() => {
-    makeReq();
-  }, []);
+    Papa.parse(file, {
+      complete: (results) => {
+        //  Array<[name, email, phone]> === [ [-], [-], [-] ]
+        results.data.shift(); // first element would the the titles
+        setCsvFile(results.data as ParsedCsv);
+        console.log(results.data);
+      },
+      error: (err) => {
+        console.log("Error parsing csv file", err);
+      },
+    });
+  };
 
   return (
     <div>
-      <h1>pog</h1>
+      <label>
+        Enter your file to parse
+        <input type="file" accept=".csv" onChange={handleFileUpload} />
+      </label>
     </div>
   );
 }

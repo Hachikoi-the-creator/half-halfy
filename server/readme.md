@@ -34,3 +34,9 @@ every migration needs a name, so that flag is abligatory
 - List tables: \dt
 - List items in table: `select * from "User";` or if it's lowercase `select * from user;` is enough
 - `create database my_database` - self explanatory
+
+# Fastify
+
+## Routing
+
+- [separate files](https://www.fastify.io/docs/latest/Guides/Getting-Started/#your-first-plugin)

@@ -2,20 +2,27 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function main() {
-  // get all
+const fetchAll = async () => {
   const users = await prisma.user.findMany();
   console.log(users);
-  // Create one
-  // const user = await prisma.user.create({
-  //   data: {
-  //     name: "Alice",
-  //     email: "alice@prisma.io",
-  //   },
-  // });
-  // console.log(user);
+};
+
+const createOne = async () => {
+  const user = await prisma.user.create({
+    data: {
+      name: "Alice",
+      email: "alice@prisma.io",
+    },
+  });
+  console.log(user);
+};
+
+async function main() {
+  console.log("nothing to do OwO");
 }
 
+// prisma.$disconnect()
+// good practice in scripts that only run once
 main()
   .then(async () => {
     await prisma.$disconnect();
